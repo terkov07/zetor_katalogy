@@ -1,0 +1,27 @@
+{% extends "catalogue/base.html" %}
+{% block title %}{{ model.name }} — Zetor Katalógy{% endblock %}
+{% block content %}
+    <p><a href="/">&larr; Späť</a></p>
+    <h1>{{ model.name }}</h1>
+
+    <h2>Katalógy náhradných dielov</h2>
+    {% for cat in grouped.parts_catalogue %}
+        <p><a href="{% url 'catalogue_detail' cat.pk %}">{{ cat.title }}</a></p>
+    {% empty %}
+        <p class="muted">Žiadne.</p>
+    {% endfor %}
+
+    <h2>Zmenové katalógy</h2>
+    {% for cat in grouped.modification_catalogue %}
+        <p><a href="{% url 'catalogue_detail' cat.pk %}">{{ cat.title }}</a></p>
+    {% empty %}
+        <p class="muted">Žiadne.</p>
+    {% endfor %}
+
+    <h2>Dielenské príručky</h2>
+    {% for cat in grouped.workshop_manual %}
+        <p><a href="{% url 'catalogue_detail' cat.pk %}">{{ cat.title }}</a></p>
+    {% empty %}
+        <p class="muted">Žiadne.</p>
+    {% endfor %}
+{% endblock %}

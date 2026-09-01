@@ -1,0 +1,42 @@
+{% extends "catalogue/base.html" %}
+{% block title %}{{ catalogue.title }} — Zetor Katalógy{% endblock %}
+{% block content %}
+    <p><a href="/">&larr; Späť</a></p>
+    <h1>{{ catalogue.title }}</h1>
+    <p class="muted">
+        {{ catalogue.get_type_display }} &middot; {{ catalogue.page_count }} strán
+        {% if not catalogue.has_text_layer %}&middot; spracované cez OCR{% endif %}
+    </p>
+
+    {% if catalogue.amends %}
+        <p class="notice">
+            Toto je zmenový katalóg k
+            <a href="{% url 'catalogue_detail' catalogue.amends.pk %}">{{ catalogue.amends.title }}</a>.
+        </p>
+    {% endif %}
+
+    {% if modifications %}
+        <div class="notice">
+            <strong>Dostupné zmenové katalógy:</strong>
+            {% for mod in modifications %}
+                <a href="{% url 'catalogue_detail' mod.pk %}">{{ mod.title }}</a>{% if not forloop.last %}, {% endif %}
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <h2>Sekcie</h2>
+        {% if sections %}
+        <ul class="section-list">
+            {% for section in sections %}
+                <li>
+                    <a href="{% url 'viewer' catalogue.pk %}?section={{ section.pk }}">
+                        {{ section.title }}
+                    </a>
+                    <span class="muted">(strany {{ section.start_page }}&ndash;{{ section.end_page }})</span>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="muted">Katalóg ešte nebol spracovaný — spustite <code>process_catalogue</code>.</p>
+    {% endif %}
+{% endblock %}

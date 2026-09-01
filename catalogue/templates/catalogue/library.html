@@ -1,0 +1,19 @@
+{% extends "catalogue/base.html" %}
+{% block title %}Knižnica — Zetor Katalógy{% endblock %}
+{% block content %}
+    <h1>Traktory</h1>
+    {% if models %}
+        <ul class="model-list">
+            {% for model in models %}
+                <li>
+                    <a href="{% url 'model_detail' model.pk %}">
+                        {{ model.name }}
+                        <span class="count">{{ model.catalogues.count }} katalóg(y)</span>
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Zatiaľ žiadne modely. Pridajte ich cez <a href="/admin/">admin panel</a>.</p>
+    {% endif %}
+{% endblock %}

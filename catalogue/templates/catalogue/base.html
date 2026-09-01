@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Zetor Katalógy{% endblock %}</title>
+    <link rel="stylesheet" href="/static/css/app.css">
+</head>
+<body>
+    <header class="app-header">
+        <a href="/" class="app-title">Zetor Katalógy</a>
+        <nav class="app-nav">
+            <a href="{% url 'search' %}">Hľadať</a>
+            <a href="{% url 'job_list' %}">Zákazky</a>
+        </nav>
+    </header>
+    <main class="app-main">
+        {% if messages %}
+            {% for message in messages %}
+                <p class="flash-message {{ message.tags }}">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

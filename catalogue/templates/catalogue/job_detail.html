@@ -1,0 +1,57 @@
+{% extends "catalogue/base.html" %}
+{% block title %}{{ job.customer|default:"Zákazka" }} — Zetor Katalógy{% endblock %}
+{% block content %}
+    <p><a href="{% url 'job_list' %}">&larr; Zákazky</a></p>
+    <h1>{{ job.customer|default:"Zákazka" }}</h1>
+    <p class="muted">
+        {% if job.model %}{{ job.model }} &middot; {% endif %}{{ job.created_at|date:"d.m.Y" }}
+        {% if job.is_active %} &middot; <span class="badge">aktívna</span>{% endif %}
+    </p>
+
+    {% if not job.is_active %}
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="activate">
+            <button type="submit">Nastaviť ako aktívnu</button>
+        </form>
+    {% endif %}
+
+    <p><a href="{% url 'job_export' job.pk %}" target="_blank">Exportovať (text)</a></p>
+
+    <h2>Poznámky</h2>
+    <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="add_note">
+        <textarea name="note" rows="4" style="width:100%;">{{ job.note }}</textarea>
+        <button type="submit">Uložiť poznámky</button>
+    </form>
+
+    <h2>Pripnuté diely</h2>
+    <form method="post" class="job-form">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="pin">
+        <input type="text" name="part_number" placeholder="Číslo dielu (presné)">
+        <button type="submit">Pripnúť</button>
+    </form>
+
+    {% if pins %}
+        <ul class="section-list">
+            {% for pin in pins %}
+                <li>
+                    <a href="{% url 'viewer' pin.part.catalogue.pk %}?page={{ pin.part.page }}{% if pin.part.section %}&section={{ pin.part.section.pk }}{% endif %}">
+                        <strong>{{ pin.part.part_number }}</strong>
+                        {% if pin.part.name_sk %} — {{ pin.part.name_sk }}{% endif %}
+                    </a>
+                    <form method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="unpin">
+                        <input type="hidden" name="pin_id" value="{{ pin.pk }}">
+                        <button type="submit" class="link-button">odopnúť</button>
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="muted">Žiadne pripnuté diely.</p>
+    {% endif %}
+{% endblock %}

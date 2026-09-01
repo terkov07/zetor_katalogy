@@ -1,0 +1,9 @@
+{% extends "catalogue/base.html" %}
+{% block title %}{{ catalogue.title }} — Zetor Katalógy{% endblock %}
+{% block content %}
+    <p>
+        <a href="{% url 'catalogue_detail' catalogue.pk %}">&larr; {{ catalogue.title }}</a>
+        {% if section %} &middot; {{ section.title }}{% endif %}
+    </p>
+    <iframe class="pdf-frame" src="{{ file_url }}" title="{{ catalogue.title }}"></iframe>
+{% endblock %}

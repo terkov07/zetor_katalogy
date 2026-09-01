@@ -1,0 +1,44 @@
+{% extends "catalogue/base.html" %}
+{% block title %}Vyhľadávanie — Zetor Katalógy{% endblock %}
+{% block content %}
+    <h1>Vyhľadávanie</h1>
+
+    <form method="get" class="search-form">
+        <input type="text" name="q" value="{{ q }}" placeholder="Číslo dielu alebo text" autofocus>
+        <div class="search-modes">
+            <label><input type="radio" name="mode" value="all" {% if mode == "all" %}checked{% endif %}> Všetko</label>
+            <label><input type="radio" name="mode" value="num" {% if mode == "num" %}checked{% endif %}> Číslo dielu</label>
+            <label><input type="radio" name="mode" value="txt" {% if mode == "txt" %}checked{% endif %}> Text</label>
+        </div>
+        <button type="submit">Hľadať</button>
+    </form>
+
+        {% if q %}
+        <h2>Výsledky pre &bdquo;{{ q }}&ldquo;</h2>
+        {% if results %}
+            <ul class="section-list">
+                {% for part in results %}
+                    <li>
+                        <a href="{% url 'viewer' part.catalogue.pk %}?page={{ part.page }}{% if part.section %}&section={{ part.section.pk }}{% endif %}">
+                            <strong>{{ part.part_number }}</strong>
+                            {% if part.name_sk %} — {{ part.name_sk }}{% endif %}
+                        </a>
+                        <div class="muted">
+                            {{ part.catalogue.title }}
+                            {% if part.section %} &middot; {{ part.section.title }}{% endif %}
+                            &middot; strana {{ part.page }}
+                        </div>
+                        {% if active_job %}
+                            <form method="post" action="{% url 'pin_to_active_job' part.pk %}">
+                                {% csrf_token %}
+                                <button type="submit" class="link-button">pripnúť k {{ active_job.customer|default:"aktívnej zákazke" }}</button>
+                            </form>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="muted">Nič sa nenašlo.</p>
+        {% endif %}
+    {% endif %}
+{% endblock %}
