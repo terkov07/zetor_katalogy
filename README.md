@@ -56,20 +56,20 @@ This detects whether the PDF already has a text layer, finds its section structu
 Scanned catalogues with no text layer go through OCR page by page and can take several minutes on a large document.
 
 ## Project structure
-catalogue/
-models.py — TractorModel, Catalogue, Section, Part, Job, JobPin
-views.py — browsing, viewer, search, jobs
-services/ — the processing pipeline
-text_detection.py — checks for a real text layer
-ocr.py — OCR fallback (Tesseract, Slovak + English)
-toc_parser.py — finds sections via bookmarks or the printed TOC
-parts_parser.py — extracts part numbers/names from page text
-splitter.py — splits a catalogue into per-section PDFs
-management/commands/
-process_catalogue.py — runs the full pipeline on one catalogue
-templates/catalogue/
-static/
-css/app.css 
+- catalogue/
+- models.py — TractorModel, Catalogue, Section, Part, Job, JobPin
+- views.py — browsing, viewer, search, jobs
+- services/ — the processing pipeline
+- text_detection.py — checks for a real text layer
+- ocr.py — OCR fallback (Tesseract, Slovak + English)
+- toc_parser.py — finds sections via bookmarks or the printed TOC
+- parts_parser.py — extracts part numbers/names from page text
+- splitter.py — splits a catalogue into per-section PDFs
+- management/commands/
+- process_catalogue.py — runs the full pipeline on one catalogue
+- templates/catalogue/
+- static/
+- css/app.css 
 
 ## Known limitations
 
