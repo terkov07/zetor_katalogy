@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Zetor Katalógy{% endblock %}</title>
     <link rel="stylesheet" href="/static/css/app.css">
+    <link rel="manifest" href="/static/manifest.json">
+    <link rel="icon" href="/static/icons/icon-192.png">
+    <link rel="apple-touch-icon" href="/static/icons/icon-192.png">
+    <meta name="theme-color" content="#C4001A">
 </head>
 <body>
     <header class="app-header">
@@ -12,6 +16,7 @@
         <nav class="app-nav">
             <a href="{% url 'search' %}">Hľadať</a>
             <a href="{% url 'job_list' %}">Zákazky</a>
+            <button id="theme-toggle" class="icon-button" aria-label="Prepnúť tmavý režim">🌙</button>
         </nav>
     </header>
     <main class="app-main">
@@ -22,5 +27,6 @@
         {% endif %}
         {% block content %}{% endblock %}
     </main>
+    <script src="/static/js/app.js"></script>
 </body>
 </html>

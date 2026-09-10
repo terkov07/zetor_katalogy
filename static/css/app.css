@@ -1,18 +1,57 @@
+:root {
+    --bg: #f7f6f3;
+    --surface: #fff;
+    --text: #1a1a1a;
+    --muted: #777;
+    --border: #ddd;
+    --accent: #C4001A;
+    --notice-bg: #fff3cd;
+}
+html[data-theme="dark"] {
+    --bg: #1a1a1a;
+    --surface: #2a2a2a;
+    --text: #f0f0f0;
+    --muted: #aaa;
+    --border: #444;
+    --accent: #ff4d4d;
+    --notice-bg: #4a3a10;
+}
+
 body {
     font-family: system-ui, sans-serif;
     margin: 0;
-    background: #f7f6f3;
-    color: #1a1a1a;
+    background: var(--bg);
+    color: var(--text);
 }
 .app-header {
-    background: #C4001A;
+    background: var(--accent);
     padding: 14px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 .app-title {
     color: #fff;
     font-weight: 700;
     font-size: 1.2rem;
     text-decoration: none;
+}
+.app-nav {
+    display: flex;
+    align-items: center;
+}
+.app-nav a {
+    color: #fff;
+    margin-left: 16px;
+    text-decoration: none;
+    font-size: 0.95rem;
+}
+.icon-button {
+    background: none;
+    border: none;
+    font-size: 1.1rem;
+    margin-left: 16px;
+    cursor: pointer;
 }
 .app-main {
     max-width: 700px;
@@ -24,8 +63,8 @@ body {
     padding: 0;
 }
 .model-list li, .section-list li {
-    background: #fff;
-    border: 1px solid #ddd;
+    background: var(--surface);
+    border: 1px solid var(--border);
     border-radius: 8px;
     padding: 12px 14px;
     margin-bottom: 8px;
@@ -33,15 +72,15 @@ body {
 .model-list a {
     display: flex;
     justify-content: space-between;
-    color: #1a1a1a;
+    color: var(--text);
     text-decoration: none;
 }
 .count, .muted {
-    color: #777;
+    color: var(--muted);
     font-size: 0.9rem;
 }
 .notice {
-    background: #fff3cd;
+    background: var(--notice-bg);
     border-radius: 8px;
     padding: 10px 14px;
     margin: 12px 0;
@@ -49,19 +88,8 @@ body {
 .pdf-frame {
     width: 100%;
     height: 85vh;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border);
     border-radius: 8px;
-}
-.app-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-.app-nav a {
-    color: #fff;
-    margin-left: 16px;
-    text-decoration: none;
-    font-size: 0.95rem;
 }
 .search-form, .job-form {
     display: flex;
@@ -72,9 +100,11 @@ body {
 .search-form input[type="text"], .job-form input[type="text"], .job-form select {
     flex: 1;
     padding: 8px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--border);
     border-radius: 6px;
     min-width: 150px;
+    background: var(--surface);
+    color: var(--text);
 }
 .search-modes {
     display: flex;
@@ -83,7 +113,7 @@ body {
     font-size: 0.9rem;
 }
 button, .job-form button, .search-form button {
-    background: #C4001A;
+    background: var(--accent);
     color: #fff;
     border: none;
     border-radius: 6px;
@@ -92,12 +122,18 @@ button, .job-form button, .search-form button {
 }
 .link-button {
     background: none;
-    color: #C4001A;
+    color: var(--accent);
     border: none;
     padding: 0;
     font-size: 0.85rem;
     text-decoration: underline;
     cursor: pointer;
+}
+.download-link {
+    color: var(--accent);
+    font-size: 0.85rem;
+    text-decoration: none;
+    margin-left: 10px;
 }
 .badge {
     background: #2e7d32;

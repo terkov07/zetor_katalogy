@@ -1,0 +1,20 @@
+{
+  "name": "Zetor Katalógy",
+  "short_name": "Zetor",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f7f6f3",
+  "theme_color": "#C4001A",
+  "icons": [
+    {
+      "src": "/static/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/static/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
