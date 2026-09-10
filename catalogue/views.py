@@ -1,10 +1,11 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.db.models import Q
-from django.http import HttpResponse
+from django.db.models import Q, Count
+from django.http import HttpResponse, FileResponse
 from django.contrib import messages
+from urllib.parse import quote
+import os
 
 from .models import TractorModel, Catalogue, Section, Part, Job, JobPin
-
 
 def library(request):
     """Home page: every tractor model, with its catalogue count."""
@@ -102,7 +103,7 @@ def search(request):
         "q": q,
         "mode": mode,
         "results": results,
-        "active_job": Job.objects.filter(is_active=True).first(),
+        "active_jobs": Job.objects.filter(is_active=True),
     })
 
 
@@ -137,8 +138,7 @@ def job_detail(request, pk):
         action = request.POST.get("action")
 
         if action == "activate":
-            Job.objects.update(is_active=False)
-            job.is_active = True
+            job.is_active = not job.is_active
             job.save()
 
         elif action == "add_note":
@@ -158,6 +158,9 @@ def job_detail(request, pk):
         elif action == "unpin":
             pin_id = request.POST.get("pin_id")
             JobPin.objects.filter(id=pin_id, job=job).delete()
+        elif action == "delete":
+            job.delete()
+            return redirect("job_list")
 
         return redirect("job_detail", pk=job.pk)
 
@@ -186,13 +189,56 @@ def job_export(request, pk):
     return HttpResponse("\n".join(lines), content_type="text/plain; charset=utf-8")
 
 
-def pin_to_active_job(request, part_id):
-    """Pins a part to whichever job is currently active — used by the
-    "Pripnúť" button on search results, so pinning doesn't require
-    leaving the search page."""
+def pin_to_job(request, part_id, job_id):
+    """Pins a part to a specific job — used by the per-active-job
+    "pin to..." buttons on search results. Now that more than one job
+    can be active at once, pinning needs to say which job, not just
+    "the" active job."""
     if request.method == "POST":
-        job = Job.objects.filter(is_active=True).first()
+        job = get_object_or_404(Job, pk=job_id)
         part = get_object_or_404(Part, pk=part_id)
-        if job:
-            JobPin.objects.get_or_create(job=job, part=part)
+        JobPin.objects.get_or_create(job=job, part=part)
+        messages.success(request, f"Pripnuté k {job.customer or job}: {part.part_number}")
     return redirect(request.META.get("HTTP_REFERER", "search"))
+
+def download_section(request, pk):
+    """
+    Serves a section's PDF with an explicit Content-Disposition header
+    forcing a real save-to-device download.
+
+    Confirmed necessary: relying on the HTML <a download> attribute
+    alone is unreliable on Android Chrome for PDFs specifically — it
+    often just opens the file in the browser's own PDF viewer instead
+    of actually saving it. Setting the header directly on the response
+    is the robust, cross-browser way to force a genuine download.
+
+    Provides both a plain ASCII filename and a UTF-8 encoded one
+    (RFC 5987) — confirmed necessary since section titles routinely
+    contain Slovak diacritics (e.g. "Úvod"), which a plain
+    Content-Disposition filename can't carry correctly on its own.
+    """
+    section = get_object_or_404(Section, pk=pk)
+    filename = os.path.basename(section.section_file.name)
+    ascii_filename = filename.encode("ascii", "ignore").decode("ascii") or "section.pdf"
+    response = FileResponse(section.section_file.open("rb"), content_type="application/pdf")
+    response["Content-Disposition"] = (
+        f'attachment; filename="{ascii_filename}"; filename*=UTF-8\'\'{quote(filename)}'
+    )
+    return response
+
+def offline(request):
+    """
+    Shows what's been downloaded. The list itself is built by JavaScript
+    reading localStorage — Django genuinely cannot know what's saved on
+    the phone/browser, since downloaded PDFs live outside its reach once
+    saved. This page just provides the shell; app.js populates it.
+    """
+    return render(request, "catalogue/offline.html", {})
+
+def set_language(request, lang_code):
+    """Switches the UI language (stored in the session) and returns to
+    wherever the person was — no page needs its own 'change language'
+    logic, this just sits behind two links in the nav."""
+    if lang_code in ("sk", "en"):
+        request.session["lang"] = lang_code
+    return redirect(request.META.get("HTTP_REFERER", "library"))

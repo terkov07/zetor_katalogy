@@ -1,22 +1,25 @@
 <!DOCTYPE html>
-<html lang="sk">
+<html lang="{{ lang }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Zetor Katalógy{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/app.css">
     <link rel="manifest" href="/static/manifest.json">
     <link rel="icon" href="/static/icons/icon-192.png">
     <link rel="apple-touch-icon" href="/static/icons/icon-192.png">
-    <meta name="theme-color" content="#C4001A">
+    <meta name="theme-color" content="#E2001A">
 </head>
 <body>
     <header class="app-header">
         <a href="/" class="app-title">Zetor Katalógy</a>
         <nav class="app-nav">
-            <a href="{% url 'search' %}">Hľadať</a>
-            <a href="{% url 'job_list' %}">Zákazky</a>
-            <button id="theme-toggle" class="icon-button" aria-label="Prepnúť tmavý režim">🌙</button>
+            <a href="{% url 'set_language' 'sk' %}" class="lang-link {% if lang == 'sk' %}lang-active{% endif %}">SK</a>
+            <a href="{% url 'set_language' 'en' %}" class="lang-link {% if lang == 'en' %}lang-active{% endif %}">EN</a>
+            <button id="theme-toggle" class="icon-button" aria-label="Toggle dark mode">🌙</button>
         </nav>
     </header>
     <main class="app-main">
@@ -27,6 +30,26 @@
         {% endif %}
         {% block content %}{% endblock %}
     </main>
+
+    <nav class="bottom-nav">
+        <a href="/" class="bottom-nav-item {% if active_tab == 'library' %}bottom-nav-active{% endif %}">
+            <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1"><path d="M4 4h6v16H4z"></path><path d="M14 4h6v16h-6z"></path></svg>
+            <span>{{ T.nav_library }}</span>
+        </a>
+        <a href="{% url 'search' %}" class="bottom-nav-item {% if active_tab == 'search' %}bottom-nav-active{% endif %}">
+            <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-4-4"></path></svg>
+            <span>{{ T.nav_search }}</span>
+        </a>
+        <a href="{% url 'job_list' %}" class="bottom-nav-item {% if active_tab == 'jobs' %}bottom-nav-active{% endif %}">
+            <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1"><path d="M6 4h12v17H6z"></path><path d="M9 3h6v3H9z"></path><path d="M9 11h6M9 15h4"></path></svg>
+            <span>{{ T.nav_jobs }}</span>
+        </a>
+        <a href="{% url 'offline' %}" class="bottom-nav-item {% if active_tab == 'offline' %}bottom-nav-active{% endif %}">
+            <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1"><path d="M12 3v11"></path><path d="M7 10l5 5 5-5"></path><path d="M4 19h16"></path></svg>
+            <span>{{ T.nav_offline }}</span>
+        </a>
+    </nav>
+
     <script src="/static/js/app.js"></script>
 </body>
 </html>

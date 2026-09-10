@@ -1,37 +1,41 @@
 {% extends "catalogue/base.html" %}
-{% block title %}{{ job.customer|default:"Zákazka" }} — Zetor Katalógy{% endblock %}
+{% block title %}{{ job.customer|default:T.job_fallback }} — Zetor Katalógy{% endblock %}
 {% block content %}
-    <p><a href="{% url 'job_list' %}">&larr; Zákazky</a></p>
-    <h1>{{ job.customer|default:"Zákazka" }}</h1>
+    <p><a href="{% url 'job_list' %}">&larr; {{ T.jobs }}</a></p>
+    <h1>{{ job.customer|default:T.job_fallback }}</h1>
     <p class="muted">
         {% if job.model %}{{ job.model }} &middot; {% endif %}{{ job.created_at|date:"d.m.Y" }}
-        {% if job.is_active %} &middot; <span class="badge">aktívna</span>{% endif %}
+        {% if job.is_active %} &middot; <span class="badge">{{ T.active }}</span>{% endif %}
     </p>
 
     {% if not job.is_active %}
         <form method="post">
             {% csrf_token %}
             <input type="hidden" name="action" value="activate">
-            <button type="submit">Nastaviť ako aktívnu</button>
+            {% if job.is_active %}
+                <button type="submit">{{ T.deactivate }}</button>
+            {% else %}
+                <button type="submit">{{ T.set_active }}</button>
+            {% endif %}
         </form>
     {% endif %}
 
-    <p><a href="{% url 'job_export' job.pk %}" target="_blank">Exportovať (text)</a></p>
+    <p><a href="{% url 'job_export' job.pk %}" target="_blank">{{ T.export_text }}</a></p>
 
-    <h2>Poznámky</h2>
+    <h2>{{ T.notes }}</h2>
     <form method="post">
         {% csrf_token %}
         <input type="hidden" name="action" value="add_note">
         <textarea name="note" rows="4" style="width:100%;">{{ job.note }}</textarea>
-        <button type="submit">Uložiť poznámky</button>
+        <button type="submit">{{ T.save_notes }}</button>
     </form>
 
-    <h2>Pripnuté diely</h2>
+    <h2>{{ T.pinned_parts }}</h2>
     <form method="post" class="job-form">
         {% csrf_token %}
         <input type="hidden" name="action" value="pin">
-        <input type="text" name="part_number" placeholder="Číslo dielu (presné)">
-        <button type="submit">Pripnúť</button>
+        <input type="text" name="part_number" placeholder="{{ T.exact_part_number }}">
+        <button type="submit">{{ T.pin }}</button>
     </form>
 
     {% if pins %}
@@ -46,12 +50,17 @@
                         {% csrf_token %}
                         <input type="hidden" name="action" value="unpin">
                         <input type="hidden" name="pin_id" value="{{ pin.pk }}">
-                        <button type="submit" class="link-button">odopnúť</button>
+                        <button type="submit" class="link-button">{{ T.unpin }}</button>
                     </form>
                 </li>
             {% endfor %}
         </ul>
     {% else %}
-        <p class="muted">Žiadne pripnuté diely.</p>
+        <p class="muted">{{ T.no_pinned_parts }}</p>
     {% endif %}
+    <form method="post" onsubmit="return confirm('{{ T.confirm_delete_job|escapejs }}');" style="margin-top:24px;">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="delete">
+        <button type="submit" style="background:#611a15;">{{ T.delete_job }}</button>
+    </form>
 {% endblock %}

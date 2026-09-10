@@ -1,0 +1,18 @@
+{% extends "catalogue/base.html" %}
+{% block title %}{{ T.offline_title }} — Zetor Katalógy{% endblock %}
+{% block content %}
+    <h1>{{ T.offline_title }}</h1>
+    <div id="offline-list"></div>
+    <button id="offline-clear-all" style="display:none; margin-top:12px;">{{ T.clear_all }}</button>
+
+    <script>
+        (function () {
+            const T = {
+                noDownloads: "{{ T.no_downloads|escapejs }}",
+                remove: "{{ T.remove|escapejs }}",
+                clearAll: "{{ T.clear_all|escapejs }}",
+            };
+            renderOfflineList(T);
+        })();
+    </script>
+{% endblock %}

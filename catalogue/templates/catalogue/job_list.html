@@ -1,18 +1,18 @@
 {% extends "catalogue/base.html" %}
-{% block title %}Zákazky — Zetor Katalógy{% endblock %}
+{% block title %}{{ T.jobs }} — Zetor Katalógy{% endblock %}
 {% block content %}
-    <h1>Zákazky</h1>
+    <h1>{{ T.jobs }}</h1>
 
     <form method="post" class="job-form">
         {% csrf_token %}
         <select name="model">
-            <option value="">Model traktora (voliteľné)</option>
+            <option value="">{{ T.model_optional }}</option>
             {% for model in models %}
                 <option value="{{ model.pk }}">{{ model.name }}</option>
             {% endfor %}
         </select>
-        <input type="text" name="customer" placeholder="Meno zákazníka (voliteľné)">
-        <button type="submit">Nová zákazka</button>
+        <input type="text" name="customer" placeholder="{{ T.customer_optional }}">
+        <button type="submit">{{ T.new_job }}</button>
     </form>
 
     {% if jobs %}
@@ -20,15 +20,15 @@
             {% for job in jobs %}
                 <li>
                     <a href="{% url 'job_detail' job.pk %}">
-                        {{ job.customer|default:"Zákazka" }}
+                        {{ job.customer|default:T.job_fallback }}
                         {% if job.model %} — {{ job.model }}{% endif %}
-                        {% if job.is_active %} <span class="badge">aktívna</span>{% endif %}
+                        {% if job.is_active %} <span class="badge">{{ T.active }}</span>{% endif %}
                     </a>
-                    <div class="muted">{{ job.created_at|date:"d.m.Y" }}</div>
+                    <div class="muted">{{ job.created_at|date:"d.m.Y" }} &middot; {{ job.pin_count }} {{ T.pinned_parts|lower }}</div>
                 </li>
             {% endfor %}
         </ul>
     {% else %}
-        <p class="muted">Zatiaľ žiadne zákazky.</p>
+        <p class="muted">{{ T.no_jobs_yet }}</p>
     {% endif %}
 {% endblock %}

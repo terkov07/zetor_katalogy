@@ -1,44 +1,44 @@
 {% extends "catalogue/base.html" %}
-{% block title %}Vyhľadávanie — Zetor Katalógy{% endblock %}
+{% block title %}{{ T.search }} — Zetor Katalógy{% endblock %}
 {% block content %}
-    <h1>Vyhľadávanie</h1>
+    <h1>{{ T.search }}</h1>
 
     <form method="get" class="search-form">
-        <input type="text" name="q" value="{{ q }}" placeholder="Číslo dielu alebo text" autofocus>
+        <input type="text" name="q" value="{{ q }}" placeholder="{{ T.search_placeholder }}" autofocus>
         <div class="search-modes">
-            <label><input type="radio" name="mode" value="all" {% if mode == "all" %}checked{% endif %}> Všetko</label>
-            <label><input type="radio" name="mode" value="num" {% if mode == "num" %}checked{% endif %}> Číslo dielu</label>
-            <label><input type="radio" name="mode" value="txt" {% if mode == "txt" %}checked{% endif %}> Text</label>
+            <label><input type="radio" name="mode" value="all" {% if mode == "all" %}checked{% endif %}> {{ T.mode_all }}</label>
+            <label><input type="radio" name="mode" value="num" {% if mode == "num" %}checked{% endif %}> {{ T.mode_number }}</label>
+            <label><input type="radio" name="mode" value="txt" {% if mode == "txt" %}checked{% endif %}> {{ T.mode_text }}</label>
         </div>
-        <button type="submit">Hľadať</button>
+        <button type="submit">{{ T.search_button }}</button>
     </form>
 
-        {% if q %}
-        <h2>Výsledky pre &bdquo;{{ q }}&ldquo;</h2>
+    {% if q %}
+        <h2>{{ T.results_for }} &bdquo;{{ q }}&ldquo;</h2>
         {% if results %}
             <ul class="section-list">
                 {% for part in results %}
                     <li>
                         <a href="{% url 'viewer' part.catalogue.pk %}?page={{ part.page }}{% if part.section %}&section={{ part.section.pk }}{% endif %}">
-                            <strong>{{ part.part_number }}</strong>
+                        <strong class="mono">{{ part.part_number }}</strong>
                             {% if part.name_sk %} — {{ part.name_sk }}{% endif %}
                         </a>
                         <div class="muted">
                             {{ part.catalogue.title }}
                             {% if part.section %} &middot; {{ part.section.title }}{% endif %}
-                            &middot; strana {{ part.page }}
+                            &middot; {{ T.page_label }} {{ part.page }}
                         </div>
-                        {% if active_job %}
-                            <form method="post" action="{% url 'pin_to_active_job' part.pk %}">
+                            {% for job in active_jobs %}
+                            <form method="post" action="{% url 'pin_to_job' part.pk job.pk %}" style="display:inline;">
                                 {% csrf_token %}
-                                <button type="submit" class="link-button">pripnúť k {{ active_job.customer|default:"aktívnej zákazke" }}</button>
+                                <button type="submit" class="link-button">{{ T.pin_to }} {{ job.customer|default:T.active_job_fallback }}</button>
                             </form>
-                        {% endif %}
+                        {% endfor %}
                     </li>
                 {% endfor %}
             </ul>
         {% else %}
-            <p class="muted">Nič sa nenašlo.</p>
+            <p class="muted">{{ T.no_results }}</p>
         {% endif %}
     {% endif %}
 {% endblock %}

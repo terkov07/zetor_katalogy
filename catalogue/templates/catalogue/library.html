@@ -1,19 +1,19 @@
 {% extends "catalogue/base.html" %}
-{% block title %}Knižnica — Zetor Katalógy{% endblock %}
+{% block title %}{{ T.tractors }} — Zetor Katalógy{% endblock %}
 {% block content %}
-    <h1>Traktory</h1>
+    <h1>{{ T.tractors }}</h1>
     {% if models %}
         <ul class="model-list">
             {% for model in models %}
                 <li>
                     <a href="{% url 'model_detail' model.pk %}">
                         {{ model.name }}
-                        <span class="count">{{ model.catalogues.count }} katalóg(y)</span>
+                        <span class="count">{{ model.catalogues.count }} {{ T.catalogues_count_suffix }}</span>
                     </a>
                 </li>
             {% endfor %}
         </ul>
     {% else %}
-        <p>Zatiaľ žiadne modely. Pridajte ich cez <a href="/admin/">admin panel</a>.</p>
+        <p>{{ T.no_models_yet }} <a href="/admin/">{{ T.admin_panel }}</a>.</p>
     {% endif %}
 {% endblock %}
