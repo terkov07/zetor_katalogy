@@ -13,23 +13,22 @@
         <button type="submit">{{ T.search_button }}</button>
     </form>
 
-    {% if q %}
+        {% if q %}
         <h2>{{ T.results_for }} &bdquo;{{ q }}&ldquo;</h2>
         {% if results %}
             <ul class="section-list">
                 {% for part in results %}
-                    <li>
-                        <a href="{% url 'viewer' part.catalogue.pk %}?page={{ part.page }}{% if part.section %}&section={{ part.section.pk }}{% endif %}">
+                    <li class="row">
+                        <a class="row-link" href="{% url 'viewer' part.catalogue.pk %}?page={{ part.page }}{% if part.section %}&section={{ part.section.pk }}{% endif %}" aria-label="{{ part.part_number }}"></a>
                         <strong class="mono">{{ part.part_number }}</strong>
-                            {% if part.name_sk %} — {{ part.name_sk }}{% endif %}
-                        </a>
+                        {% if part.name_sk %} — {{ part.name_sk }}{% endif %}
                         <div class="muted">
                             {{ part.catalogue.title }}
                             {% if part.section %} &middot; {{ part.section.title }}{% endif %}
                             &middot; {{ T.page_label }} {{ part.page }}
                         </div>
-                            {% for job in active_jobs %}
-                            <form method="post" action="{% url 'pin_to_job' part.pk job.pk %}" style="display:inline;">
+                        {% for job in active_jobs %}
+                            <form method="post" action="{% url 'pin_to_job' part.pk job.pk %}" class="row-action" style="display:inline;">
                                 {% csrf_token %}
                                 <button type="submit" class="link-button">{{ T.pin_to }} {{ job.customer|default:T.active_job_fallback }}</button>
                             </form>

@@ -24,19 +24,20 @@
         </div>
     {% endif %}
 
-    <h2>{{ T.sections }}</h2>
+        <h2>{{ T.sections }}</h2>
+        <h2>{{ T.sections }}</h2>
     {% if sections %}
         <ul class="section-list">
             {% for section in sections %}
-                <li>
-                    <a href="{% url 'viewer' catalogue.pk %}?section={{ section.pk }}">
-                        {{ section.title }}
-                    </a>
+                <li class="row">
+                    <a class="row-link" href="{% url 'viewer' catalogue.pk %}?section={{ section.pk }}" aria-label="{{ section.title }}"></a>
+                    {{ section.title }}
                     <span class="muted">({{ T.pages_label }} {{ section.start_page }}&ndash;{{ section.end_page }})</span>
                     {% if section.section_file %}
-                        <a href="{% url 'download_section' section.pk %}" class="download-link"
-                           data-track-download data-title="{{ section.title }}"
-                           data-catalogue-title="{{ catalogue.title }}" data-catalogue-id="{{ catalogue.pk }}">{{ T.download }}</a>
+                        <a href="{% url 'download_section' section.pk %}" class="download-link row-action"
+                           data-title="{{ section.title }}"
+                           data-catalogue-title="{{ catalogue.title }}"
+                           data-catalogue-id="{{ catalogue.pk }}">{{ T.download }}</a>
                     {% endif %}
                 </li>
             {% endfor %}

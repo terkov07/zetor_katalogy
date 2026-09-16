@@ -38,15 +38,14 @@
         <button type="submit">{{ T.pin }}</button>
     </form>
 
-    {% if pins %}
+        {% if pins %}
         <ul class="section-list">
             {% for pin in pins %}
-                <li>
-                    <a href="{% url 'viewer' pin.part.catalogue.pk %}?page={{ pin.part.page }}{% if pin.part.section %}&section={{ pin.part.section.pk }}{% endif %}">
-                        <strong>{{ pin.part.part_number }}</strong>
-                        {% if pin.part.name_sk %} — {{ pin.part.name_sk }}{% endif %}
-                    </a>
-                    <form method="post" style="display:inline;">
+                <li class="row">
+                    <a class="row-link" href="{% url 'viewer' pin.part.catalogue.pk %}?page={{ pin.part.page }}{% if pin.part.section %}&section={{ pin.part.section.pk }}{% endif %}" aria-label="{{ pin.part.part_number }}"></a>
+                    <strong class="mono">{{ pin.part.part_number }}</strong>
+                    {% if pin.part.name_sk %} — {{ pin.part.name_sk }}{% endif %}
+                    <form method="post" class="row-action" style="display:inline;">
                         {% csrf_token %}
                         <input type="hidden" name="action" value="unpin">
                         <input type="hidden" name="pin_id" value="{{ pin.pk }}">
@@ -58,6 +57,7 @@
     {% else %}
         <p class="muted">{{ T.no_pinned_parts }}</p>
     {% endif %}
+    
     <form method="post" onsubmit="return confirm('{{ T.confirm_delete_job|escapejs }}');" style="margin-top:24px;">
         {% csrf_token %}
         <input type="hidden" name="action" value="delete">

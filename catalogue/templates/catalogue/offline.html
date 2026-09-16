@@ -6,13 +6,13 @@
     <button id="offline-clear-all" style="display:none; margin-top:12px;">{{ T.clear_all }}</button>
 
     <script>
-        (function () {
+        window.addEventListener("DOMContentLoaded", function () {
             const T = {
                 noDownloads: "{{ T.no_downloads|escapejs }}",
                 remove: "{{ T.remove|escapejs }}",
                 clearAll: "{{ T.clear_all|escapejs }}",
             };
             renderOfflineList(T);
-        })();
+        });
     </script>
 {% endblock %}

@@ -142,6 +142,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MAILERS = {
     'default': {
-        'BACKEND': 'django.core.mail.backends.console.EmailBackend',
+        'BACKEND': 'django.core.mail.backends.console.EmailBackend',#
+    
     },
 }
+
+# Allow this app's own pages to embed its own content in an iframe
+# (needed for the PDF viewer) — SAMEORIGIN still blocks any other site
+# from framing this app, so it's not a real security loosening.
+X_FRAME_OPTIONS = 'SAMEORIGIN'

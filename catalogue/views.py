@@ -43,18 +43,8 @@ def catalogue_detail(request, pk):
 
 
 def viewer(request, pk):
-    """
-    Shows a PDF using the browser's own built-in viewer (Chrome/Firefox/
-    Edge all handle zoom, page nav, and in-document search natively) —
-    deliberately not vendoring PDF.js for this first version, since the
-    native viewer needs zero extra setup and covers the same core needs.
-
-    Pass ?section=<id> to view one split-out section instead of the
-    whole original file, and/or ?page=<n> to open at a specific page.
-    """
     catalogue = get_object_or_404(Catalogue, pk=pk)
     section = None
-
     section_id = request.GET.get("section")
     if section_id:
         section = get_object_or_404(Section, pk=section_id, catalogue=catalogue)
@@ -66,10 +56,20 @@ def viewer(request, pk):
     if page:
         file_url = f"{file_url}#page={page}"
 
+    # Parts known to be on this exact page, so they can be pinned directly
+    # from the viewer instead of only from search results — only possible
+    # when a specific page number is given, since without one there's no
+    # single page to match against.
+    page_parts = []
+    if page:
+        page_parts = Part.objects.filter(catalogue=catalogue, page=int(page))
+
     return render(request, "catalogue/viewer.html", {
         "catalogue": catalogue,
         "section": section,
         "file_url": file_url,
+        "page_parts": page_parts,
+        "active_jobs": Job.objects.filter(is_active=True),
     })
 
 

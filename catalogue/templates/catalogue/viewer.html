@@ -6,4 +6,25 @@
         {% if section %} &middot; {{ section.title }}{% endif %}
     </p>
     <iframe class="pdf-frame" src="{{ file_url }}" title="{{ catalogue.title }}"></iframe>
+
+    {% if page_parts %}
+        <h2>{{ T.parts_on_page }}</h2>
+        <ul class="section-list">
+            {% for part in page_parts %}
+                <li class="row">
+                    <strong class="mono">{{ part.part_number }}</strong>
+                    {% if part.name_sk %} — {{ part.name_sk }}{% endif %}
+                    {% for job in active_jobs %}
+                        <form method="post" action="{% url 'pin_to_job' part.pk job.pk %}" class="row-action" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="link-button">{{ T.pin_to }} {{ job.customer|default:T.active_job_fallback }}</button>
+                        </form>
+                    {% endfor %}
+                </li>
+            {% endfor %}
+        </ul>
+        {% if not active_jobs %}
+            <p class="muted">{{ T.no_active_job_hint }}</p>
+        {% endif %}
+    {% endif %}
 {% endblock %}

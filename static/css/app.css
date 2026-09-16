@@ -205,6 +205,7 @@ button, .job-form button, .search-form button {
 }
 .download-link {
     color: var(--red);
+    background: transparent;
     font-size: 11px;
     font-weight: 700;
     letter-spacing: .06em;
@@ -214,6 +215,7 @@ button, .job-form button, .search-form button {
     border: 1px solid var(--line);
     padding: 4px 8px;
     border-radius: 2px;
+    cursor: pointer;
 }
 .badge {
     background: #1DB954;
@@ -273,4 +275,27 @@ button, .job-form button, .search-form button {
 }
 .bottom-nav-active {
     color: var(--red);
+}
+
+/* Clickable-card pattern: the whole row is tappable, while any
+   secondary action inside it (download, unpin, pin) stays independently
+   clickable by sitting visually above the covering link. */
+.row {
+    position: relative;
+}
+.row-link {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+}
+.row-action {
+    position: relative;
+    z-index: 2;
+    display: inline-block;
+}
+.model-list li, .section-list li {
+    transition: background 0.1s;
+}
+.model-list li:hover, .section-list li:hover {
+    background: var(--hair);
 }

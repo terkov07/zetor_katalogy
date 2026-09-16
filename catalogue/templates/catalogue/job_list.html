@@ -14,16 +14,14 @@
         <input type="text" name="customer" placeholder="{{ T.customer_optional }}">
         <button type="submit">{{ T.new_job }}</button>
     </form>
-
     {% if jobs %}
         <ul class="section-list">
             {% for job in jobs %}
-                <li>
-                    <a href="{% url 'job_detail' job.pk %}">
-                        {{ job.customer|default:T.job_fallback }}
-                        {% if job.model %} — {{ job.model }}{% endif %}
-                        {% if job.is_active %} <span class="badge">{{ T.active }}</span>{% endif %}
-                    </a>
+                <li class="row">
+                    <a class="row-link" href="{% url 'job_detail' job.pk %}" aria-label="{{ job.customer|default:T.job_fallback }}"></a>
+                    {{ job.customer|default:T.job_fallback }}
+                    {% if job.model %} — {{ job.model }}{% endif %}
+                    {% if job.is_active %} <span class="badge">{{ T.active }}</span>{% endif %}
                     <div class="muted">{{ job.created_at|date:"d.m.Y" }} &middot; {{ job.pin_count }} {{ T.pinned_parts|lower }}</div>
                 </li>
             {% endfor %}
